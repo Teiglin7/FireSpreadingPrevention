@@ -1,0 +1,2 @@
+# FireSpreadingPrevention
+CodingGame optimization game
