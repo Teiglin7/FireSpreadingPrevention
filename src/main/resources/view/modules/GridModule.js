@@ -5,6 +5,7 @@ import { EntityFactory } from '../entity-module/EntityFactory.js'
 
 
 export class GridModule {
+	
 	/**
 	 * Corresponds to the moduleName variable used in the Java module.
 	 */
@@ -15,6 +16,7 @@ export class GridModule {
 	constructor(assets) {
 		this.startId = 1000000
 		this.runtimeId = this.startId
+		this.tileSize = 128;
 	}
 	
 	getValue(sequence, i) {
@@ -84,8 +86,8 @@ export class GridModule {
 						values: {
 							...this.tiles[i][j][0].defaultState,
 							image: "tileDirt.png",
-							x: 128 * j,
-							y: 128 * i,
+							x: this.tileSize * j,
+							y: this.tileSize * i,
 							zIndex: 0,
 							alpha: 1,
 							visible: true
@@ -97,8 +99,8 @@ export class GridModule {
 						values: {
 							...this.tiles[i][j][1].defaultState,
 							image: "tileGrass.png",
-							x: 128 * j,
-							y: 128 * i,
+							x: this.tileSize * j,
+							y: this.tileSize * i,
 							zIndex: 1,
 							alpha: opacity,
 							visible: (opacity != 0.0)
@@ -109,8 +111,8 @@ export class GridModule {
 						values: {
 							...this.tiles[i][j][2].defaultState,
 							images: "onfire_0001.png,onfire_0002.png,onfire_0003.png,onfire_0004.png",
-							x: 128 * j,
-							y: 128 * i,
+							x: this.tileSize * j,
+							y: this.tileSize * i,
 							zIndex: 2,
 							alpha: 1,
 							visible: (fireProgress >= 0 && fireProgress < 100)
@@ -131,19 +133,6 @@ export class GridModule {
 			},
 			curve: {}
 		}, frameInfo.number, frameInfo);
-
-		/*var sprite = EntityFactory.create("S");
-		sprite.id = this.runtimeId++;
-		entityModule.entities.set(sprite.id, sprite);
-		sprite.addState(0, {
-			values: {
-				...sprite.defaultState,
-				image: "tree.png",
-				visible: true,
-				zIndex: 10
-			},
-			curve: {}
-		}, frameInfo.number, frameInfo)*/
 		
 		console.log("Turn " + frameInfo.number + " loaded.");
 

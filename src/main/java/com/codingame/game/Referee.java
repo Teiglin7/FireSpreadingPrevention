@@ -24,15 +24,10 @@ public class Referee extends AbstractReferee {
     
     int width = 0;
     int height = 0;
-    
-    private int eggsCollected = 0;
 
     @Override
     public void init() {
         gameManager.setFrameDuration(500);
-        
-        // Draw background
-        //graphicEntityModule.createSprite().setImage(Constants.BACKGROUND_SPRITE);
         
         List<String> testCaseLines = gameManager.getTestCaseInput();
         
@@ -59,94 +54,6 @@ public class Referee extends AbstractReferee {
         }
 
         gridModule.grid[5][5].fireProgress = 0;
-        
-
-        /*for (int y=0; y < height; ++y) {
-            for (int x=0; x < width; ++x) {
-            	graphicEntityModule.createSprite().setImage(Constants.DIRT_SPRITE)
-            			.setX(x * Constants.CELL_SIZE)
-            			.setY(y * Constants.CELL_SIZE)
-                        .setZIndex(0);
-            }
-        }
-
-        String[] fireSpriteSheet = graphicEntityModule.createSpriteSheetSplitter()
-    	    .setSourceImage("onfire.png")
-    	    .setImageCount(9)
-    	    .setWidth(128)
-    	    .setHeight(128)
-    	    .setOrigRow(0)
-    	    .setOrigCol(0)
-    	    .setImagesPerRow(3)
-    	    .setName("onfire")
-    	    .split();
-        
-        for (int y=0; y < height; ++y) {
-            for (int x=0; x < width; ++x) {
-            	grid[y][x].tileSprite = graphicEntityModule.createSprite().setImage(Constants.GRASS_SPRITE)
-            			.setX(x * Constants.CELL_SIZE)
-            			.setY(y * Constants.CELL_SIZE)
-                        .setZIndex(1);
-            	grid[y][x].fireSprite = graphicEntityModule.createSpriteAnimation()
-                	    .setImages(fireSpriteSheet)
-            			.setX(x * Constants.CELL_SIZE + Constants.CELL_OFFSET)
-            			.setY(y * Constants.CELL_SIZE + Constants.CELL_OFFSET)
-            			.setAnchor(0.5)
-                	    .setLoop(true)
-                        .setZIndex(2);
-            }
-        }*/
-        
-        
-        /*for (int i = 0; i < eggsCount; i++) {
-            Coord position = new Coord(testInputs[i * 3 + 2], testInputs[i * 3 + 3]);
-            int eggsQuantity = testInputs[i * 3 + 4];
-            eggs.put(position, eggsQuantity);
-            
-            String[] seaweedSprites = graphicEntityModule.createSpriteSheetSplitter()
-        	    .setSourceImage("onfire.png")
-        	    .setImageCount(9)
-        	    .setWidth(128)
-        	    .setHeight(128)
-        	    .setOrigRow(0)
-        	    .setOrigCol(0)
-        	    .setImagesPerRow(3)
-        	    .setName("onfire")
-        	    .split();
-
-        	//Creating an animation from the splitted spritesheet
-            SpriteAnimation eggSprite = graphicEntityModule.createSpriteAnimation()
-        	    .setImages(seaweedSprites)
-        	    .setX(50)
-        	    .setY(50)
-        	    .setLoop(true)
-        	    .setAnchor(.5)
-                .setZIndex(1);
-
-            Sprite eggSprite = graphicEntityModule.createSprite().setImage(Constants.EGGS_SPRITE)
-                .setAnchor(.5)
-                .setZIndex(1);
-            
-            Text eggText = graphicEntityModule.createText(String.valueOf(eggsQuantity))
-                .setFontSize(60)
-                .setFillColor(0x000000)
-                .setAnchor(.5)
-                .setZIndex(2);
-            
-            Group eggGroup = graphicEntityModule.createGroup(eggSprite, eggText)
-                .setX(position.x * Constants.CELL_SIZE + Constants.CELL_OFFSET)
-                .setY(position.y * Constants.CELL_SIZE + Constants.CELL_OFFSET);
-            
-            eggGroups.put(position, eggGroup);
-            
-            gameManager.getPlayer().sendInputLine(position.toString() + " " + eggsQuantity);
-        }
-
-        fishSprite = graphicEntityModule.createSprite().setImage(Constants.FISH_SPRITE)
-            .setX(fishPosition.x * Constants.CELL_SIZE + Constants.CELL_OFFSET)
-            .setY(fishPosition.y * Constants.CELL_SIZE + Constants.CELL_OFFSET)
-            .setAnchor(.5)
-            .setZIndex(2);*/
 
         for (String line : testCaseLines)
         	gameManager.getPlayer().sendInputLine(line);
@@ -202,21 +109,11 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void onEnd() {
-        gameManager.putMetadata("eggs", String.valueOf(eggsCollected));
+        gameManager.putMetadata("remainingValue", String.valueOf(0));
     }
 
     private void updateView() {
-        /*fishSprite.setX(fishPosition.x * Constants.CELL_SIZE + Constants.CELL_OFFSET, Curve.LINEAR)
-            .setY(fishPosition.y * Constants.CELL_SIZE + Constants.CELL_OFFSET, Curve.LINEAR);*/
-        /*for (Cell[] cellLine : grid) {
-            for (Cell cell : cellLine) {
-            	cell.tileSprite.setAlpha(cell.fireSpeed == 0 ? 0.0 : ((100 - Math.max(0,cell.fireProgress)) / 100.0));
-            	cell.fireSprite.setScale(cell.fireProgress >= 0 && cell.fireProgress < 100 ? Math.pow(cell.fireSpeed / 100.0, 0.5) : 0.0);
-                tooltips.setTooltipText(cell.tileSprite, String.format(
-                		"Value: %s\nFire speed: %s\nFire progress: %s",
-                		cell.value, cell.fireSpeed, cell.fireProgress));
-            }
-        }*/
+    	
     }
 
     private Coord checkOutput(List<String> outputs) {
