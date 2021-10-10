@@ -180,7 +180,7 @@ public class Referee extends AbstractReferee {
             gameManager.loseGame("Timeout!");
         }
         
-        if (turn >= 30) {
+        if (turn >= 50) {
             gameManager.winGame("Game over. Max turns reached.");
         }
 
