@@ -1,0 +1,9 @@
+read W:int H:int
+loop H loopline W fireSpeed:int
+loop H loopline W value:int
+gameloop
+loop H loopline W fireProgress:int
+write 0 0
+
+OUTPUT
+Intervention coords
