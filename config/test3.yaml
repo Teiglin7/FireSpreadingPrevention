@@ -1,0 +1,14 @@
+title:
+  2: Each cell matters
+  1: Chaque case est cruciale
+testIn: |-
+  5
+  4 2 1
+  0 0 0
+  15 3
+  7 1
+  ###############
+  #.............#
+  ###############
+isTest: 'true'
+isValidator: 'true'

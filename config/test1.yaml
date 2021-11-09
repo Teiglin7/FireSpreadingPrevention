@@ -1,0 +1,21 @@
+title:
+  2: No sooner said than done
+  1: Aussitot dit aussitot fait
+testIn: |-
+  5
+  2 10 1
+  2 10 100
+  10 10
+  3 3
+  ##########
+  #........#
+  #........#
+  #........#
+  #........#
+  #.....X..#
+  #........#
+  #........#
+  #........#
+  ##########
+isTest: 'true'
+isValidator: 'true'

@@ -1,9 +1,32 @@
-read W:int H:int
-loop H loopline W fireSpeed:int
-loop H loopline W value:int
+read maxLostValue:int
+read treeTreatmentDuration:int treeFireDuration:int treeValue:int
+read houseTreatmentDuration:int houseFireDuration:int houseValue:int
+read width:int height:int
+read fireStartX:int fireStartY:int
+loop height read gridLine:word(width)
 gameloop
-loop H loopline W fireProgress:int
-write 0 0
+read cooldown:int
+loop height loopline width fireProgress:int
+write WAIT
+
+INPUT
+maxLostValue: maximal sum of the values of burnt and cut cells for considering this test as a success
+treeTreatmentDuration: cooldown for cutting a "tree" cell
+treeFireDuration: number of turns for the fire to propagate on adjacent cells from a "tree" cell
+treeValue: value lost if a "tree" cell is burnt or cut
+houseTreatmentDuration: cooldown for cutting a "house" cell
+houseFireDuration: number of turns for the fire to propagate on adjacent cells from a "house" cell
+houseValue: value lost if a "house" cell is burnt or cut
+width: number of columns in the grid
+height: number of rows in the grid
+fireStartX: column where the fire starts
+fireStartY: row where the fire starts
+cooldown: number of turns remaining before you can cut a new cell
+fireProgress: state of the fire in this cell (-2: safe, -1: no fire, 0<=.<fireDuration: fire, fireDuration: burnt)
+
 
 OUTPUT
-Intervention coords
+WAIT if your intervention cooldown is not zero, else position [x] [y] of your intervention.
+
+STATEMENT
+Read the constant data of the map before the main loop, then read the state of the fire and give an action at each turn

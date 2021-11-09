@@ -1,32 +1,154 @@
+<!--suppress ALL, HtmlUnknownTarget -->
+<div id="statement_back" class="statement_back" style="display:none"></div>
 <div class="statement-body">
-<div class="statement-section statement-goal">
-   <h2><span class="icon icon-goal">&nbsp;</span><span>Goal </span></h2>
-   <span class="question-statement">In this game, you control a mother fish trying to get back to her eggs. She's so worried she keeps swimming forward, but you can help her to decide whether she must go <const>UP</const>, <const>DOWN</const> or stay <const>STILL</const> on the same height.<br><br>The game is played on a grid of <strong>15</strong> cells wide and <strong>6</strong> cells high. The cell on the top right corner's coordinate is (0, 0). Each turn, the fish goes one cell to the <strong>right</strong>. To succeed your mission, you must lead the fish to <strong>at least one</strong> of her eggs. Collect as many eggs as you can.</span>
+
+    <!-- GOAL -->
+    <div class="statement-section statement-goal">
+        <h1>
+            <span class="icon icon-goal">&nbsp;</span>
+            <span>The Goal</span>
+        </h1>
+        <div class="statement-goal-content">
+            The fire just started in a forest.
+            It will spread and destroy all its environment composed of three types of cells:
+            <ul>
+                <li>valuable cells, represented with houses</li>
+                <li>less valuable cells, represented with trees</li>
+                <li>safe cells, represented with a beige ground</li>
+            </ul>
+			You have the ability to make cell safe in order to block the spreading of the fire.
+            This action will be called "cutting"  (for the trees, but may also be made on houses).
+            It will enable you to prevent some cells from burning.
+            However this action takes time and the fire doesn't wait for you.
+            You will have to choose carefully which cells to cut in order to protect as much value as you can before the fire reaches these cells.
+        </div>
+    </div>
+    
+    <!-- RULES -->
+    <div class="statement-section statement-rules">
+        <h1>
+            <span class="icon icon-rules">&nbsp;</span>
+            <span>Rules</span>
+        </h1>
+        <div>
+            <div class="statement-rules-content">
+            	A cell is either a safe cell or a tree cell or a house cell.
+            	All tree and house cells have three parameters:
+	            <ul>
+	                <li><var>fireDuration</var>: number of turns a cell remains on fire before propagating into the adjacent cells.</li>
+	                <li><var>cutDuration</var>: number of turns needed to make the cell safe.</li>
+	                <li><var>value</var>: score represented by this cell and lost if this cell is burnt or cut.</li>
+	            </ul>
+	            These three parameters are the same for each "tree" cells and the same for each "house" cells.
+	            You are given these parameters (6 values), the size of the map, the starting cell of the fire, and finally the type of each cell of the map.
+	            By blocking the spreading fire, you must save as much value as you can.<br>
+	            
+				A cell in fire stays in fire during <var>fireDuration</var> turns.
+                Each cell has a <var>fireProgress</var> incremented each turns.
+                Once this <var>fireProgress</var> reaches <var>fireDuration</var>, the tile is considered as burnt and propagates into the four adjacent cells (North, South, East, West) if they are not safe and not burnt (with <var>fireProgress</var> == <const>-1</const>).
+                <br>
+				You can cut cells to make them safe and block the spreading of the fire. When you cut a cell, a <var>cooldown</var> is set to the <var>cutDuration</var> of the cell. It will decrease during the next turns until it reaches 0. While the <var>cooldown</var> is non zero, you may not give another cell to cut.
+                <br>
+                You cannot cut cells which are safe (it would be useless) and cells which are on fire (or you will burn with the cell). Otherwise the game will end. Also, a cell is considered safe as soon as you start to cut it. That is, a fire in an adjacent cell cannot spread into the cell where you already are.
+                <br>
+                <strong>Note</strong>: If a game is ended because of a timeout or a bad output, you don't necessarily lose. The game will compute the spreading of the remaining fire if any, then the success of the test will be determined by comparing the lost value with the given maximal lost value.
+
+            </div>
+        </div>
+    </div>
+    <!-- PROTOCOL -->
+    <div class="statement-section statement-protocol">
+        <h1>
+            <span class="icon icon-protocol">&nbsp;</span>
+            <span>Game Input</span>
+        </h1>
+        <!-- Protocol block -->
+        <div class="blk">
+            <div class="title">Initialization input</div>
+            <div class="text">
+                <span class="statement-lineno">1st line:</span>
+                	an integer <var>maxLostValue</var>, the maximal sum of the values of burnt and cut
+                	cells for considering this test as a success.
+                <br>
+                <span class="statement-lineno">2nd line</span>:
+                	three space-separated integers <var>treeCuttingDuration</var>, <var>treeFireDuration</var>
+                	and <var>treeValue</var> the parameters of the tree cells, as explained in the rules.
+                <br>
+                <span class="statement-lineno">3rd line</span>: 
+                	three space-separated integers <var>houseCuttingDuration</var>, <var>houseFireDuration</var>
+                	and <var>houseValue</var> the parameters of the house cells, as explained in the rules.
+                <br>
+                <span class="statement-lineno">4th line</span>: 
+                	two space-separated integers <var>width</var>, <var>height</var>, the dimensions of the map.
+                <br>
+                <span class="statement-lineno">5th line</span>: 
+                	two space-separated integers <var>fireStartX</var>, <var>fireStartY</var>, the position
+					where the fire starts.
+                <br>
+                <span class="statement-lineno">Next <var>height</var> lines</span>: 
+                	character sequence of length <var>width</var> representing a line of the grid. Each character
+                	represents the type of a cell. <const>'#'</const> is a safe cell. <const>'.'</const> is a
+                	tree cell. <const>'X'</const> is a house cell.
+                <br>
+            </div>
+        </div>
+
+        <!-- Protocol block -->
+        <div class="blk">
+            <div class="title">Input for one game turn</div>
+            <div class="text">
+                <span class="statement-lineno">1st line:</span>
+                	an integer <var>cooldown</var>, the number of turns before you can give the instruction of cutting a cell
+                	(&ge; 1 means you have to WAIT / == 0 means you can give a cell to cut).
+                <br>
+                <span class="statement-lineno">Next <var>height</var> lines</span>: 
+                	<var>width</var> space-separated integers representing the <var>fireProgress</var> of
+                	each cell of a line of the grid.
+		            <ul>
+		                <li><var>fireProgress</var> == -2 means the cell is safe</li>
+		                <li><var>fireProgress</var> == -1 means there is no fire</li>
+		                <li>0 &le; <var>fireProgress</var> &lt; <var>fireDuration</var> means the cell is on fire</li>
+		                <li><var>fireProgress</var> == <var>fireDuration</var> means the cell is burnt</li>
+		            </ul>
+                <br>
+            </div>
+
+            <!-- Protocol block -->
+            <div class="blk">
+                <div class="title">Output for one game turn</div>
+                <div class="text">
+                	One line containing either <const>"WAIT"</const> if your cooldown is
+                	not 0, or "<var>x</var> <var>y</var>" the position of the cell to cut. You can also
+                	<const>WAIT</const> if your cooldown is 0, but it is not really productive :p
+                	<br>
+                	If an invalid input format is given or if you try to cut a cell while your
+                	cooldown is non zero, then you lose.
+                	If you give a cell to cut, then at the beginning of the next turn, your <var>cooldown</var>
+                	will be <var>cellCuttingDuration</var>-<const>1</const>.
+                </div>
+
+                <!-- Protocol block -->
+                <div class="blk">
+                    <div class="title">Constraints</div>
+                    <div class="text">
+                    	0 &le; <var>width</var>, <var>height</var> &le; 50<br>
+                    	0 &le; <var>fireDuration</var> &le; 10<br>
+                    	0 &le; <var>cuttingDuration</var> &le; 10<br>
+                    	0 &le; <var>value</var> &le; 1000<br>
+                    	All cells on the border of the map will be <const>SAFE</const> cells.<br>
+                    	<br>
+                        Allotted response time to output for the first turn is &le; <const>5000</const> ms.<br>
+                    	Allotted response time to output for the other turns is &le; <const>100</const> ms.<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="statement-body" style="margin:15px">
+        <h1>
+            <span>Notes for contribution (will be removed at the end of the WIP)</span>
+        </h1>
+        I didn't provide any validator yet, since the tests may change. Hence you can suggest some ideas of test if you think some scenarios have to be tested.
+    </div>
 </div>
-<div class="statement-section statement-protocol">
-   <div class="blk">
-      <div class="title">Initialization input</div>
-      <div class="question-statement-input">
-        <span class="statement-lineno">First line:</span> <var>eggsCount</var>, the number of eggs lost in the ocean.<br/><br/>
-        <span class="statement-lineno">The <var>eggsCount</var> next lines:</span>
-        <ul style="padding-bottom: 0">
-          <li>
-            2 integers <var>eggX</var> and <var>eggY</var> representing the position of one group of eggs.
-          </li>
-          <li>
-            1 integer <var>eggQuantity</var> representing the number of eggs in one group.
-          </li>
-        </ul>
-      </div>
-      <div class="title">Input for a game round</div>
-      <div class="question-statement-input">2 integers <var>fishX</var> and <var>fishY</var> representing the position of the fish.</div>
-   </div>
-   <div class="blk">
-      <div class="title">Output</div>
-      <div class="question-statement-output">One action among these:<br>- <const>UP</const>: Makes the fish go one cell higher.<br>- <const>DOWN</const>: Makes the fish go one cell lower.<br>- <const>STILL</const>: Does not change the fish's height.</div>
-   </div>
-   <div class="blk">
-      <div class="title">Constraints</div>
-      <div class="question-statement-constraints">0 &lt; <var>eggX</var> &lt; 15<br>0 &lt; <var>eggY</var> &lt; 6<br>0 &lt; <var>fishX</var> &lt; 15<br>0 &lt; <var>fishY</var> &lt; 6</div>
-   </div>
-</div></div>

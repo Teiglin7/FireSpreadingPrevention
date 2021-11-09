@@ -1,5 +1,5 @@
 import com.codingame.gameengine.runner.SoloGameRunner;
-import com.codingame.gameengine.runner.dto.GameResult;
+//import com.codingame.gameengine.runner.simulate.GameResult;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,7 +9,7 @@ public class Main {
         gameRunner.setAgent(Solution.class);
 
         // Sets a test case
-        gameRunner.setTestCase("test2.json");
+        gameRunner.setTestCase("test3.yaml");
 
         gameRunner.start();
         //GameResult result = gameRunner.simulate();

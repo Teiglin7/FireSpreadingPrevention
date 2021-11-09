@@ -1,34 +1,153 @@
+<!--suppress ALL, HtmlUnknownTarget -->
+
+<meta charset="UTF-8">
+
+<div id="statement_back" class="statement_back" style="display:none"></div>
 <div class="statement-body">
-<div class="statement-section statement-goal">
-   <h2><span class="icon icon-goal">&nbsp;</span><span>Goal </span></h2>
-   <span class="question-statement">Dans ce jeu, vous contrôlez une mère poisson qui tente de retrouver ses oeufs. Elle est tellement inquiète qu'elle ne s'arrête pas d'avancer, mais vous pouvez l'aider en choisissant si elle doit aller vers le haut (<const>UP</const>), vers le bas (<const>DOWN</const>) ou rester sur la même ligne (<const>STILL</const>).
-    <br><br>
-    Le jeu se déroule sur une grille de <strong>15</strong> cellules de large et <strong>6</strong> cellules de haut. La cellule en haut à gauche est de coordonnée (0, 0). &Agrave; chaque tour, le poisson se déplace d'une case vers la <strong>droite</strong>. Pour réussir votre mission, vous devez mener le poisson à <strong>au moins un</strong> de ses oeufs. Collectez autant d'oeufs que vous pouvez</span>
+
+    <!-- GOAL -->
+    <div class="statement-section statement-goal">
+        <h1>
+            <span class="icon icon-goal">&nbsp;</span>
+            <span>The Goal</span>
+        </h1>
+        <div class="statement-goal-content">
+            Un feu vient de démarrer dans une forêt. Il va se propager et détruire son environnement
+            composé de trois types de cellules:
+            <ul>
+                <li>des cellules de grande valeur, représentées par des maisons</li>
+                <li>des cellules de petite valeur, représentées par des arbres</li>
+                <li>des cellules sécurisées, représentées par un sol beige</li>
+            </ul>
+            Tu as la possibilité de sécuriser des cellules afin de bloquer la propagation du feu.
+            Cette action sera appelée par la suite "raser" (une cellule).
+            Cela te permettra d'empêcher certaines cellules de brûler.
+            Cependant, cette action prend du temps, et le feu ne va pas t'attendre.
+            Ainsi, ton but est de protéger le plus de ressources possible (somme des valeurs des cellules) avant que le feu ne les atteigne.
+        </div>
+    </div>
+    
+    <!-- RULES -->
+    <div class="statement-section statement-rules">
+        <h1>
+            <span class="icon icon-rules">&nbsp;</span>
+            <span>Rules</span>
+        </h1>
+        <div>
+            <div class="statement-rules-content">
+	            Une cellule est soit sécurisée, soit un arbre, soit une maison.
+	            Chaque cellule avec un arbre ou une maison a trois paramêtres :
+	            <ul>
+	                <li><var>fireDuration</var> :
+	                	nombre de tours durant lequel le feu reste dans cette cellule avant de se propager dans les cellules adjacentes non sécurisées et pas encore brûlées.
+	                </li>
+	                <li><var>cutDuration</var> :
+	                	nombre de tours nécessaires pour sécuriser cette cellule.
+	                </li>
+	                <li><var>value</var> :
+	                	score que représente cette cellule et perdu si cette dernière est brûlée ou rasée.
+	                </li>
+	            </ul>
+	            Ces trois paramêtres sont les mêmes pour tous les arbres, et les mêmes pour toutes les maisons.
+	            Ces paramètres (6 valeurs) te sont fournis, ainsi que les dimensions du terrain, la cellule de départ du feu, et le type de chaque cellule.
+	            L'objectif est de sauvegarder autant de valeur que possible en bloquant la propagation du feu dans certaines zones.<br>
+	            
+	            Une cellule en feu le reste pendant <var>fireDuration</var> tours.
+                Chaque cellule a un <var>fireProgress</var> incrémenté à chaque tour.
+                Une fois que <var>fireProgress</var> atteind <var>fireDuration</var>, la cellule est considérée brûlée, et le feu se propage dans les cellules adjacentes valides.
+                Ces dernières sont dans les 4 directions (Nord, Sud, Est, Ouest), et sont valides si elles ne sont ni brûlée ni sécurisées (pour lesquelles <var>fireProgress</var> vaut <const>-1</const>).<br>
+				
+                Tu peux raser des cellules afin de les sécuriser et bloquer la propagation du feu. Quand tu rases une cellule, un <var>cooldown</var> est initialisé avec la valeur <var>cutDuration</var> de la cellule. Il diminuera alors sur les prochains tours jusqu'à 0. Tant que le <var>cooldown</var> n'est pas zéro, tu ne pas pas indiquer une autre cellule à raser.
+                <br>
+                Tu ne peux pas raser les cellules déjà sécurisée (ce serait inutile) et celles en feu (parce que le feu, ça brûle). Autrement, la simulation prend fin. En revanche, une cellule est considérée sécurisée dès que tu commences à la raser. Autrement dit, le feu dans une cellule adjacente ne pas pas se propager dans la cellule où tu es.
+                <br>
+                <strong>Note</strong>: Si la simulation est interrompue à cause d'un timeout ou d'une mauvaise commande, tu n'as pas nécessairement perdu. La propagation du feu sera calculée jusqu'à extinction, et la réussite du test sera déterminée en comparant la valeur perdue avec la valeur perdue maximale donnée à l'initialisation.
+            </div>
+        </div>
+    </div>
+    <!-- PROTOCOL -->
+    <div class="statement-section statement-protocol">
+        <h1>
+            <span class="icon icon-protocol">&nbsp;</span>
+            <span>Game input</span>
+        </h1>
+        <!-- Protocol block -->
+        <div class="blk">
+            <div class="title">Initialization input</div>
+            <div class="text">
+                <span class="statement-lineno">1ère ligne:</span>
+                	un entier <var>maxLostValue</var>, somme maximale des valeurs des cellules brûlées ou rasées afin de considérer ce test réussi.
+                <br>
+                <span class="statement-lineno">2nde ligne</span>:
+                	trois entiers séparés par des espaces <var>treeCuttingDuration</var>, <var>treeFireDuration</var> et <var>treeValue</var>, les paramètres des cellules "arbres", comme expliqués dans les règles.
+                <br>
+                <span class="statement-lineno">3ème ligne</span>: 
+                	trois entiers séparés par des espaces <var>houseCuttingDuration</var>, <var>houseFireDuration</var> et <var>houseValue</var>, les paramètres des cellules "maisons", comme expliqués dans les règles.
+                <br>
+                <span class="statement-lineno">4ème ligne</span>: 
+                	deux entiers séparés par des espaces <var>width</var>, <var>height</var>, la largeur et la hauteur du terrain (grille).
+                <br>
+                <span class="statement-lineno">5ème ligne</span>: 
+                	deux entiers séparés par des espaces <var>fireStartX</var>, <var>fireStartY</var>, la position où le feu démarre.
+                <br>
+                <span class="statement-lineno">Prochaines <var>height</var> lignes</span>: 
+                	séquence de caractères de longueur <var>width</var> représentant une ligne de la grille.
+                    Chaque caractère représente le type d'une cellule. <const>'#'</const> est une cellule sécurisée.
+                    <const>'.'</const> est une cellule "arbre". <const>'X'</const> est une cellule "maison".
+                <br>
+            </div>
+        </div>
+
+        <!-- Protocol block -->
+        <div class="blk">
+            <div class="title">Input for one game turn</div>
+            <div class="text">
+                <span class="statement-lineno">1ère ligne:</span>
+                	un entier <var>cooldown</var>, le nombre de tours avant que tu puisses donner l'instruction de raser une cellule (&ge; 1 signifie que tu dois attendre (<const>WAIT</const>) / == 0 signifie que tu peux donner une cellule à raser).
+                <br>
+                <span class="statement-lineno">Prochaines <var>height</var> lignes</span>: 
+                	<var>width</var> entiers séparés par des espaces représentant la progression du feu (<var>fireProgress</var>) de chaque cellule d'une ligne de la grille.
+		            <ul>
+		                <li><var>fireProgress</var> == -2 signifie que la cellule est sécurisée</li>
+		                <li><var>fireProgress</var> == -1 signifie qu'il n'y a pas de feu</li>
+		                <li>0 &le; <var>fireProgress</var> &lt; <var>fireDuration</var> signifie que la cellule est en feu</li>
+		                <li><var>fireProgress</var> == <var>fireDuration</var> signifie que la cellule est brûlée</li>
+		            </ul>
+                <br>
+            </div>
+
+            <!-- Protocol block -->
+            <div class="blk">
+                <div class="title">Output for one game turn</div>
+                <div class="text">
+                    Une ligne contenant soit <const>"WAIT"</const> si ton <var>cooldown</var> is strictement positif, soit "<var>x</var> <var>y</var>" la position de la cellule à raser.
+                    Tu peux également attendre (<const>WAIT</const>) si ton cooldown est zéro, mais ce n'est pas vraiment productif :p
+                	<br>
+                    Si le format de l'output donné est invalide ou si tu essaies de raser une cellule alors que ton <var>cooldown</var> n'est pas zéro, alors tu perds. Si tu donnes une cellules à raser, alors au début de ton prochain tour, ton <var>cooldown</var> sera à <var>cellCuttingDuration</var>-<const>1</const>.
+                </div>
+
+                <!-- Protocol block -->
+                <div class="blk">
+                    <div class="title">Contraintes</div>
+                    <div class="text">
+                    	0 &le; <var>width</var>, <var>height</var> &le; 50<br>
+                    	0 &le; <var>fireDuration</var> &le; 10<br>
+                    	0 &le; <var>cuttingDuration</var> &le; 10<br>
+                    	0 &le; <var>value</var> &le; 1000<br>
+                    	Toutes les cellules en bordure de terrain seront sécurisées (<const>SAFE</const>).<br>
+                    	<br>
+                        Temps de calcul maximal pour le 1er tour : <const>5000</const> ms.<br>
+                    	Temps de calcul maximal pour les tours suivants : <const>100</const> ms.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="statement-body" style="margin:15px">
+        <h1>
+            <span>Notes pour la contribution (à retirer à la fin du WIP)</span>
+        </h1>
+        Je n'ai pas encore créé de tests de validation, puisque certains tests pourront changer. De fait, tu peux proposer quelques idées si tu penses à des scenarios pertinents non testés.
+    </div>
 </div>
-<div class="statement-section statement-protocol">
-   <div class="blk">
-      <div class="title">Entrées d'initialisation</div>
-      <div class="question-statement-input">
-        <span class="statement-lineno">Première ligne :</span> <var>eggsCount</var>, le nombre d'oeufs perdus.<br/><br/>
-        <span class="statement-lineno">Les <var>eggsCount</var> prochaines lignes :</span>
-        <ul style="padding-bottom: 0">
-          <li>
-            2 entiers <var>eggX</var> et <var>eggY</var> correspondant à la position du groupe d'oeufs.
-          </li>
-          <li>
-            1 entier <var>eggQuantity</var> correspondant au nombre d'oeufs dans un groupe.
-          </li>
-        </ul>
-      </div>
-      <div class="title">Entrée pour un tour de jeu</div>
-      <div class="question-statement-input">2 entiers <var>fishX</var> et <var>fishY</var> correspondant à la position du poisson.</div>
-   </div>
-   <div class="blk">
-      <div class="title">Sortie pour un tour de jeu</div>
-      <div class="question-statement-output">Une action parmi :<br>- <const>UP</const>: Le poisson monte d'une cellule.<br>- <const>DOWN</const>: Le poisson descend d'une cellule.<br>- <const>STILL</const>: Ne change pas la hauteur du poisson.</div>
-   </div>
-   <div class="blk">
-      <div class="title">Contraintes</div>
-      <div class="question-statement-constraints">0 &lt; <var>eggX</var> &lt; 15<br>0 &lt; <var>eggY</var> &lt; 6<br>0 &lt; <var>fishX</var> &lt; 15<br>0 &lt; <var>fishY</var> &lt; 6</div>
-   </div>
-</div></div>

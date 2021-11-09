@@ -2,9 +2,16 @@ package com.codingame.game;
 
 public class Coord {
     public static final Coord ZERO = new Coord(0, 0);
-    public static final Coord UP = new Coord(0, -1);
-    public static final Coord DOWN = new Coord(0, 1);
-    public static final Coord RIGHT = new Coord(1, 0);
+    public static final Coord N = new Coord(0, -1);
+    public static final Coord S = new Coord(0, 1);
+    public static final Coord W = new Coord(-1, 0);
+    public static final Coord E = new Coord(1, 0);
+    public static final Coord NE = new Coord(1, -1);
+    public static final Coord SE = new Coord(1, 1);
+    public static final Coord SW = new Coord(-1, 1);
+    public static final Coord NW = new Coord(-1, -1);
+    public static final Coord[] DIRECTIONS = new Coord[] { N, S, W, E };
+    public static final Coord[] DIRECTIONS_ALL = new Coord[] { N, S, W, E, NE, SE, SW, NW };
     
     public int x, y;
     
