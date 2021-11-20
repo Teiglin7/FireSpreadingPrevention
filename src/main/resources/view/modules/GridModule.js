@@ -118,17 +118,15 @@ export class GridModule {
 	handleGlobalData(players, globalData) {
 		console.log("Loading map...");
 		var dataLines = globalData.split('\n');
-		console.log(dataLines);
-		this.maxBurntValue = parseInt(dataLines[0]);
-		var treeWords = dataLines[1].split(' ');
+		var treeWords = dataLines[0].split(' ');
 		this.treeFireDuration = parseInt(treeWords[0]);
 		this.treeCuttingDuration = parseInt(treeWords[1]);
 		this.treeValue = parseInt(treeWords[2]);
-		var houseWords = dataLines[2].split(' ');
+		var houseWords = dataLines[1].split(' ');
 		this.houseFireDuration = parseInt(houseWords[0]);
 		this.houseCuttingDuration = parseInt(houseWords[1]);
 		this.houseValue = parseInt(houseWords[2]);
-		var sizeWords = dataLines[3].split(' ');
+		var sizeWords = dataLines[2].split(' ');
 		this.width = parseInt(sizeWords[0]);
 		this.height = parseInt(sizeWords[1]);
 		this.scale = fitAspectRatio(128 * this.width, 128 * this.height, WIDTH, HEIGHT);
@@ -138,7 +136,6 @@ export class GridModule {
 		this.tiles = new Array(this.height);
 		for (var i = 0; i < this.height; i++) {
 			this.tiles[i] = new Array(this.width);
-			console.log(dataLines[4 + i]);
 			for (var j = 0; j < this.width; j++) {
 				var tile = this.tiles[i][j] = {};
 				tile.tileSprite = EntityFactory.create("S");
@@ -149,7 +146,7 @@ export class GridModule {
 				tile.fireAnim = EntityFactory.create("A");
 				tile.fireAnim.id = this.runtimeId++;
 				tile.fireProgress = -3;
-				var typeChar = dataLines[4 + i].charAt(j);
+				var typeChar = dataLines[3 + i].charAt(j);
 				tile.type = typeChar == "#" ? CellType.SAFE : typeChar == "." ? CellType.TREE : CellType.HOUSE;
 			}
 		}
@@ -233,7 +230,7 @@ export class GridModule {
 								anchorY: 0.95 + 0.1 * Math.random(),
 								zIndex: 2 + i,
 								alpha: 1.0,
-								scaleX: tile.fireProgress == -3 ? 1.0 : 0.0,
+								scaleX: 1.0,
 								scaleY: tile.fireProgress == -3 ? 1.0 : 0.0,
 								visible: tile.fireProgress == -3
 							},

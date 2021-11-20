@@ -61,7 +61,13 @@
                 <br>
                 Tu ne peux pas raser les cellules déjà sécurisée (ce serait inutile) et celles en feu (parce que le feu, ça brûle). Autrement, la simulation prend fin. En revanche, une cellule est considérée sécurisée dès que tu commences à la raser. Autrement dit, le feu dans une cellule adjacente ne pas pas se propager dans la cellule où tu es.
                 <br>
-                <strong>Note</strong>: Si la simulation est interrompue à cause d'un timeout ou d'une mauvaise commande, tu n'as pas nécessairement perdu. La propagation du feu sera calculée jusqu'à extinction, et la réussite du test sera déterminée en comparant la valeur perdue avec la valeur perdue maximale donnée à l'initialisation.
+                Il s'agit d'un jeu d'optimisation. Ainsi ton but est de sauvegarder autant de valeur (des cellules) que possible.
+                Le score pour un test est la somme des valeurs des cellules qui n'ont pas brulé ou été rasées.
+                Le score pour ce jeu est la somme des scores de chaque test.
+                <br>
+                <strong>Note</strong>: Les tests ne peuvent pas échouer.
+                Si la simulation est interrompue à cause d'un timeout ou d'une mauvaise commande,
+                la propagation du feu sera calculée jusqu'à extinction, avant de calculer le score final.
             </div>
         </div>
     </div>
@@ -76,21 +82,21 @@
             <div class="title">Initialization input</div>
             <div class="text">
                 <span class="statement-lineno">1ère ligne:</span>
-                	un entier <var>maxLostValue</var>, somme maximale des valeurs des cellules brûlées ou rasées afin de considérer ce test réussi.
+                	trois entiers séparés par des espaces <var>treeCuttingDuration</var>, <var>treeFireDuration</var>
+                	et <var>treeValue</var>, les paramètres des cellules "arbres", comme expliqués dans les règles.
                 <br>
-                <span class="statement-lineno">2nde ligne</span>:
-                	trois entiers séparés par des espaces <var>treeCuttingDuration</var>, <var>treeFireDuration</var> et <var>treeValue</var>, les paramètres des cellules "arbres", comme expliqués dans les règles.
+                <span class="statement-lineno">2ème ligne</span>: 
+                	trois entiers séparés par des espaces <var>houseCuttingDuration</var>, <var>houseFireDuration</var>
+                	et <var>houseValue</var>, les paramètres des cellules "maisons", comme expliqués dans les règles.
                 <br>
                 <span class="statement-lineno">3ème ligne</span>: 
-                	trois entiers séparés par des espaces <var>houseCuttingDuration</var>, <var>houseFireDuration</var> et <var>houseValue</var>, les paramètres des cellules "maisons", comme expliqués dans les règles.
-                <br>
-                <span class="statement-lineno">4ème ligne</span>: 
                 	deux entiers séparés par des espaces <var>width</var>, <var>height</var>, la largeur et la hauteur du terrain (grille).
                 <br>
-                <span class="statement-lineno">5ème ligne</span>: 
-                	deux entiers séparés par des espaces <var>fireStartX</var>, <var>fireStartY</var>, la position où le feu démarre.
+                <span class="statement-lineno">4ème ligne</span>: 
+                	deux entiers séparés par des espaces <var>fireStartX</var>, <var>fireStartY</var>, la position
+                	où le feu démarre.
                 <br>
-                <span class="statement-lineno">Prochaines <var>height</var> lignes</span>: 
+                <span class="statement-lineno"><var>height</var> Prochaines lignes</span>: 
                 	séquence de caractères de longueur <var>width</var> représentant une ligne de la grille.
                     Chaque caractère représente le type d'une cellule. <const>'#'</const> est une cellule sécurisée.
                     <const>'.'</const> est une cellule "arbre". <const>'X'</const> est une cellule "maison".
@@ -103,10 +109,12 @@
             <div class="title">Input for one game turn</div>
             <div class="text">
                 <span class="statement-lineno">1ère ligne:</span>
-                	un entier <var>cooldown</var>, le nombre de tours avant que tu puisses donner l'instruction de raser une cellule (&ge; 1 signifie que tu dois attendre (<const>WAIT</const>) / == 0 signifie que tu peux donner une cellule à raser).
+                	un entier <var>cooldown</var>, le nombre de tours avant que tu puisses donner l'instruction de raser une cellule
+                	(&ge; 1 signifie que tu dois attendre (<const>WAIT</const>) / == 0 signifie que tu peux donner une cellule à raser).
                 <br>
                 <span class="statement-lineno">Prochaines <var>height</var> lignes</span>: 
-                	<var>width</var> entiers séparés par des espaces représentant la progression du feu (<var>fireProgress</var>) de chaque cellule d'une ligne de la grille.
+                	<var>width</var> entiers séparés par des espaces représentant la progression du feu (<var>fireProgress</var>) de
+                	chaque cellule d'une ligne de la grille.
 		            <ul>
 		                <li><var>fireProgress</var> == -2 signifie que la cellule est sécurisée</li>
 		                <li><var>fireProgress</var> == -1 signifie qu'il n'y a pas de feu</li>
@@ -120,10 +128,14 @@
             <div class="blk">
                 <div class="title">Output for one game turn</div>
                 <div class="text">
-                    Une ligne contenant soit <const>"WAIT"</const> si ton <var>cooldown</var> is strictement positif, soit "<var>x</var> <var>y</var>" la position de la cellule à raser.
+                    Une ligne contenant soit <const>"WAIT"</const> si ton <var>cooldown</var> is strictement positif,
+                    soit "<var>x</var> <var>y</var>" la position de la cellule à raser.
                     Tu peux également attendre (<const>WAIT</const>) si ton cooldown est zéro, mais ce n'est pas vraiment productif :p
                 	<br>
-                    Si le format de l'output donné est invalide ou si tu essaies de raser une cellule alors que ton <var>cooldown</var> n'est pas zéro, alors tu perds. Si tu donnes une cellules à raser, alors au début de ton prochain tour, ton <var>cooldown</var> sera à <var>cellCuttingDuration</var>-<const>1</const>.
+                    Si le format de l'output donné est invalide ou si tu essaies de raser une cellule alors que ton
+                    <var>cooldown</var> n'est pas zéro, alors tu perds.
+                    Si tu donnes une cellules à raser, alors au début de ton prochain tour, ton <var>cooldown</var>
+                    sera à <var>cellCuttingDuration</var>-<const>1</const>.
                 </div>
 
                 <!-- Protocol block -->
@@ -134,6 +146,7 @@
                     	0 &le; <var>fireDuration</var> &le; 10<br>
                     	0 &le; <var>cuttingDuration</var> &le; 10<br>
                     	0 &le; <var>value</var> &le; 1000<br>
+                    	8000 &le; [Somme de <var>value</var> pour chaque cellule] &leq; 12000<br>
                     	Toutes les cellules en bordure de terrain seront sécurisées (<const>SAFE</const>).<br>
                     	<br>
                         Temps de calcul maximal pour le 1er tour : <const>5000</const> ms.<br>

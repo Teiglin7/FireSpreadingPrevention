@@ -277,8 +277,6 @@ public class Solution {
 	
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
-        int maxBurntValue = scanner.nextInt();
         
         int treeTreatmentDuration = scanner.nextInt();
         int treeFireDuration = scanner.nextInt();

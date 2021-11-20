@@ -15,12 +15,43 @@ public class GridModule implements Module {
 
     private GameManager<AbstractPlayer> gameManager;
     
-    public int height;
-    public int width;
-    public int remainingValue = 0;
-    public int burntValue = 0;
-    public int cutValue = 0;
-    public int nActiveFire = 0;
+    private int height;
+    public int getHeight() {
+    	return height;
+    }
+    private int width;
+    public int getWidth() {
+    	return width;
+    }
+    
+    private int totalValue = 0;
+    public int getTotalValue() {
+    	return totalValue;
+    }
+    
+    private int burntValue = 0;
+    public int getBurntValue() {
+    	return burntValue;
+    }
+    private int cutValue = 0;
+    public int getCutValue() {
+    	return cutValue;
+    }
+    public int getLostValue() {
+    	return burntValue + cutValue;
+    }
+    
+    private int nActiveFire = 0;
+    public int getNActiveFire() {
+    	return nActiveFire;
+    }
+    
+    public int getRemainingValue() {
+    	return totalValue - burntValue - cutValue;
+    }
+    
+    
+
     
     Coord cuttingPos = new Coord(-1, -1);
     int cuttingCooldown = 0;
@@ -32,8 +63,6 @@ public class GridModule implements Module {
     int houseCuttingDuration = 0;
     int houseFireDuration = 0;
     int houseValue = 0;
-    
-    int maxLostValue = 0;
     
     enum CellType {
     	SAFE,
@@ -64,8 +93,6 @@ public class GridModule implements Module {
 
         int k = 0;
         String[] words;
-
-        maxLostValue = Integer.parseInt(data.get(k++));
         
         words= data.get(k++).split(" ");
         treeCuttingDuration = Integer.parseInt(words[0]);
@@ -87,6 +114,7 @@ public class GridModule implements Module {
         fireStart.x = Integer.parseInt(words[0]);
         fireStart.y = Integer.parseInt(words[1]);
         
+        totalValue = 0;
         for (int y=0; y < height; ++y) {
             String line = data.get(k++);
             for (int x=0; x < width; ++x) {
@@ -117,7 +145,7 @@ public class GridModule implements Module {
             		System.err.println("Invalid input: unknown char '" + line.charAt(x) + "' for cell.");
             		break;
             	}
-                remainingValue += cell.value;
+                totalValue += cell.value;
             }
         }
         
@@ -132,14 +160,9 @@ public class GridModule implements Module {
     	return grid[pos.y][pos.x];
     }
     
-    public int getLostValue() {
-    	return burntValue + cutValue;
-    }
-    
     public void setFire(Coord pos) {
     	if (getCell(pos).fireProgress < 0) {
     		getCell(pos).fireProgress = 0;
-    		remainingValue -= getCell(pos).value;
     		burntValue += getCell(pos).value;
     		nActiveFire += 1;
     	}
@@ -148,7 +171,6 @@ public class GridModule implements Module {
     	Cell cell = getCell(pos);
     	if (cell.fireProgress == -1) {
     		cell.fireProgress = -2;
-    		remainingValue -= cell.value;
     		cutValue += cell.value;
     		cuttingPos = pos;
     		cuttingCooldown = cell.cuttingDuration;
@@ -194,7 +216,6 @@ public class GridModule implements Module {
 	@Override
 	public void onGameInit() {
 		String viewData = "";
-		viewData += maxLostValue + "\n";
 		viewData += treeFireDuration + " " + treeCuttingDuration + " " + treeValue + "\n";
 		viewData += houseFireDuration + " " + houseCuttingDuration + " " + houseValue + "\n";
 		viewData += width + " " + height + "\n";

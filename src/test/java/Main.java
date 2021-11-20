@@ -9,7 +9,7 @@ public class Main {
         gameRunner.setAgent(Solution.class);
 
         // Sets a test case
-        gameRunner.setTestCase("test3.yaml");
+        gameRunner.setTestCase("test8.yaml");
 
         gameRunner.start();
         //GameResult result = gameRunner.simulate();

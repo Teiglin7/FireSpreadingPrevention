@@ -27,28 +27,27 @@ public class Referee extends AbstractReferee {
     Rectangle infoBackground = null;
     Text infoText = null;
     
+    final int firstTurnMaxTimeMs = 5000;
+    final int turnMaxTimeMs = 100;
+    
     int width = 0;
     int height = 0;
-    
-    int maxLostValue = 0;
     
     int cuttingCooldown = 0;
 
     @Override
     public void init() {
         gameManager.setFrameDuration(500);
-        gameManager.setFirstTurnMaxTime(5000);
-        gameManager.setTurnMaxTime(100);
+        gameManager.setFirstTurnMaxTime(firstTurnMaxTimeMs);
+        gameManager.setTurnMaxTime(turnMaxTimeMs);
         gameManager.setMaxTurns(201);
         
         List<String> testCaseLines = gameManager.getTestCaseInput();
 
         gridModule.init(testCaseLines);
         
-        maxLostValue = Integer.parseInt(testCaseLines.get(0));
-        
-        width = gridModule.width;
-        height = gridModule.height;
+        width = gridModule.getWidth();
+        height = gridModule.getHeight();
         
         System.out.println(width + "x" + height);
 
@@ -130,18 +129,18 @@ public class Referee extends AbstractReferee {
             	}
             }
             if (!gameManager.isGameEnd()) {
-                if (gridModule.nActiveFire <= 0) {
+                if (gridModule.getNActiveFire() <= 0) {
                 	endGame("Fire extinguished");
                 }
                 else if (turn >= 200) {
                 	endGame("Max turns reached");
                 }
-                else if (gridModule.getLostValue() > maxLostValue) {
-                	endGame("Too much lost value (" + gridModule.getLostValue() + " > " + maxLostValue + ")");
-                }
             }
         } catch (TimeoutException e) {
-        	endGame("Timeout");
+        	endGame("Timeout (" + (turn == 1 ?
+        			("first turn max time = " + firstTurnMaxTimeMs) :
+        			("turn max time = " + turnMaxTimeMs)
+        	) + " ms)");
             System.err.println("Timeout!");
         }
         
@@ -165,36 +164,22 @@ public class Referee extends AbstractReferee {
     }
     
     void endGame(String cause) {
-		while (gridModule.nActiveFire > 0)
+		while (gridModule.getNActiveFire() > 0)
 	    	gridModule.propagate();
-    	if (gridModule.getLostValue() <= maxLostValue) {
-            gameManager.winGame(
-            		"Game over: " + cause + ". " +
-            		"You won because the burnt value (" + gridModule.getLostValue() +
-            		") is below the maximal burnt value (" + maxLostValue + ")."
-            );
-    	}
-    	else {
-            gameManager.loseGame(
-            		"Game over: " + cause + ". " +
-            		"You lost because the burnt value (" + gridModule.getLostValue() +
-            		") excedeed the maximal burnt value (" + maxLostValue + ")."
-            );
-    	}
+        gameManager.winGame("Game over: " + cause + ".\nScore (remaining value): " + gridModule.getRemainingValue());
     }
 
     @Override
     public void onEnd() {
-        gameManager.putMetadata("lostValue", String.valueOf(gridModule.getLostValue()));
+        gameManager.putMetadata("remainingValue", String.valueOf(gridModule.getRemainingValue()));
     }
 
     private void updateView() {
     	infoText.setText(
-    			"Remaining value: " + gridModule.remainingValue +
-    			"\nBurnt value: " + gridModule.burntValue +
-    			"\nCut value: " + gridModule.cutValue +
-    			"\nLost value: " + gridModule.getLostValue() + "/" + maxLostValue +
-    			"\nActive fires: " + gridModule.nActiveFire +
+    			"Remaining value: " + gridModule.getRemainingValue() + " / " + (gridModule.getTotalValue()) +
+    			"\nBurnt value: " + gridModule.getBurntValue() +
+    			"\nCut value: " + gridModule.getCutValue() +
+    			"\nActive fires: " + gridModule.getNActiveFire() +
     			"\nCutting cooldown: " + cuttingCooldown);
     }
 

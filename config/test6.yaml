@@ -2,9 +2,8 @@ title:
   2: Double intervention
   1: Double intervention
 testIn: |-
-  120
-  7 2 1
-  7 10 100
+  7 2 40
+  7 10 1000
   20 20
   3 6
   ####################

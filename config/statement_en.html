@@ -1,4 +1,7 @@
 <!--suppress ALL, HtmlUnknownTarget -->
+
+
+
 <div id="statement_back" class="statement_back" style="display:none"></div>
 <div class="statement-body">
 
@@ -35,9 +38,15 @@
             	A cell is either a safe cell or a tree cell or a house cell.
             	All tree and house cells have three parameters:
 	            <ul>
-	                <li><var>fireDuration</var>: number of turns a cell remains on fire before propagating into the adjacent cells.</li>
-	                <li><var>cutDuration</var>: number of turns needed to make the cell safe.</li>
-	                <li><var>value</var>: score represented by this cell and lost if this cell is burnt or cut.</li>
+	                <li><var>fireDuration</var>:
+	                	number of turns a cell remains on fire before propagating into the adjacent cells.
+	                </li>
+	                <li><var>cutDuration</var>:
+	                	number of turns needed to make the cell safe.
+	                </li>
+	                <li><var>value</var>:
+	                	score represented by this cell and lost if this cell is burnt or cut.
+	                </li>
 	            </ul>
 	            These three parameters are the same for each "tree" cells and the same for each "house" cells.
 	            You are given these parameters (6 values), the size of the map, the starting cell of the fire, and finally the type of each cell of the map.
@@ -51,8 +60,14 @@
                 <br>
                 You cannot cut cells which are safe (it would be useless) and cells which are on fire (or you will burn with the cell). Otherwise the game will end. Also, a cell is considered safe as soon as you start to cut it. That is, a fire in an adjacent cell cannot spread into the cell where you already are.
                 <br>
-                <strong>Note</strong>: If a game is ended because of a timeout or a bad output, you don't necessarily lose. The game will compute the spreading of the remaining fire if any, then the success of the test will be determined by comparing the lost value with the given maximal lost value.
-
+                It is an optimization game. So your goal is to keep as much value as possible.
+                The score for a test is the sum of the value of cells which were not burnt or cut.
+                The score for this game is the sum of the score for each test.
+                <br>
+                <strong>Note</strong>: Tests cannot fail.
+                If a test is ended because of a timeout or a bad output,
+                the game will compute the spreading of the remaining fire (if any) for the final score.
+				<br>
             </div>
         </div>
     </div>
@@ -66,27 +81,23 @@
         <div class="blk">
             <div class="title">Initialization input</div>
             <div class="text">
-                <span class="statement-lineno">1st line:</span>
-                	an integer <var>maxLostValue</var>, the maximal sum of the values of burnt and cut
-                	cells for considering this test as a success.
-                <br>
-                <span class="statement-lineno">2nd line</span>:
+                <span class="statement-lineno">1st line</span>:
                 	three space-separated integers <var>treeCuttingDuration</var>, <var>treeFireDuration</var>
                 	and <var>treeValue</var> the parameters of the tree cells, as explained in the rules.
                 <br>
-                <span class="statement-lineno">3rd line</span>: 
+                <span class="statement-lineno">2nd line</span>: 
                 	three space-separated integers <var>houseCuttingDuration</var>, <var>houseFireDuration</var>
                 	and <var>houseValue</var> the parameters of the house cells, as explained in the rules.
                 <br>
-                <span class="statement-lineno">4th line</span>: 
+                <span class="statement-lineno">3rd line</span>: 
                 	two space-separated integers <var>width</var>, <var>height</var>, the dimensions of the map.
                 <br>
-                <span class="statement-lineno">5th line</span>: 
+                <span class="statement-lineno">4th line</span>: 
                 	two space-separated integers <var>fireStartX</var>, <var>fireStartY</var>, the position
 					where the fire starts.
                 <br>
                 <span class="statement-lineno">Next <var>height</var> lines</span>: 
-                	character sequence of length <var>width</var> representing a line of the grid. Each character
+                	character sequence of length <var>width</var> representing a row of the grid. Each character
                 	represents the type of a cell. <const>'#'</const> is a safe cell. <const>'.'</const> is a
                 	tree cell. <const>'X'</const> is a house cell.
                 <br>
@@ -117,12 +128,12 @@
             <div class="blk">
                 <div class="title">Output for one game turn</div>
                 <div class="text">
-                	One line containing either <const>"WAIT"</const> if your cooldown is
-                	not 0, or "<var>x</var> <var>y</var>" the position of the cell to cut. You can also
+                	One line containing either <const>"WAIT"</const> if your cooldown is not 0,
+                	or "<var>x</var> <var>y</var>" the position of the cell to cut. You can also
                 	<const>WAIT</const> if your cooldown is 0, but it is not really productive :p
                 	<br>
                 	If an invalid input format is given or if you try to cut a cell while your
-                	cooldown is non zero, then you lose.
+                	<var>cooldown</var> is non zero, then you lose.
                 	If you give a cell to cut, then at the beginning of the next turn, your <var>cooldown</var>
                 	will be <var>cellCuttingDuration</var>-<const>1</const>.
                 </div>
@@ -135,6 +146,7 @@
                     	0 &le; <var>fireDuration</var> &le; 10<br>
                     	0 &le; <var>cuttingDuration</var> &le; 10<br>
                     	0 &le; <var>value</var> &le; 1000<br>
+                    	8000 &le; [Sum of <var>value</var> for each cell] &le; 12000<br>
                     	All cells on the border of the map will be <const>SAFE</const> cells.<br>
                     	<br>
                         Allotted response time to output for the first turn is &le; <const>5000</const> ms.<br>
@@ -149,6 +161,6 @@
         <h1>
             <span>Notes for contribution (will be removed at the end of the WIP)</span>
         </h1>
-        I didn't provide any validator yet, since the tests may change. Hence you can suggest some ideas of test if you think some scenarios have to be tested.
+        I didn't provide any validator yet, since the tests may change. Hence you can suggest some ideas if you think some scenarios have to be tested.
     </div>
 </div>

@@ -1,4 +1,3 @@
-read maxLostValue:int
 read treeTreatmentDuration:int treeFireDuration:int treeValue:int
 read houseTreatmentDuration:int houseFireDuration:int houseValue:int
 read width:int height:int
@@ -10,7 +9,6 @@ loop height loopline width fireProgress:int
 write WAIT
 
 INPUT
-maxLostValue: maximal sum of the values of burnt and cut cells for considering this test as a success
 treeTreatmentDuration: cooldown for cutting a "tree" cell
 treeFireDuration: number of turns for the fire to propagate on adjacent cells from a "tree" cell
 treeValue: value lost if a "tree" cell is burnt or cut
